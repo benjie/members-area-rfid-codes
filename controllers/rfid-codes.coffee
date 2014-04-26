@@ -3,7 +3,7 @@ Controller = require 'members-area/app/controller'
 module.exports = class RfidCodes extends Controller
     list: (done)->
         @rendered = true # We're handling rendering
-        #TODO Security! Need to check additional secret here
+        #TODO Security! Need to check additional secret here. Secret should probably be set via a new admin view for rfidcodes
         if false
             @res.json 400, {errorCode: 400, errorMessage: "Invalid or no auth"}
             return done()
@@ -21,6 +21,7 @@ module.exports = class RfidCodes extends Controller
                 for u in users
                     if u.meta.rfidcodes
                         for code in u.meta.rfidcodes
+                            code = code.toLowerCase()
                             #might be an existing known code
                             thisCode = codes[code] ? {}
 
