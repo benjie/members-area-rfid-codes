@@ -9,7 +9,7 @@ module.exports =
         done()
              
     modifyUserPage: (options, done) ->
-        {controller, html} = options
+        {controller, $} = options
 
         #Get meta for currently selected user (not request user)
         codes = controller.user.rfidcodes
@@ -24,7 +24,7 @@ module.exports =
         htmlToAdd += "<input type='submit'value='Add'></form>"
         if lis.length
             htmlToAdd += '<ul>'+lis.join('')+'</ul>'
-        options.html = html.replace("</h2><p>", "</h2>"+htmlToAdd+"<p>")
+        $(".main h2").first().after htmlToAdd
 
         done()
 
