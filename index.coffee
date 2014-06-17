@@ -14,17 +14,53 @@ module.exports =
     #Get meta for currently selected user (not request user)
     codes = controller.user.rfidcodes
     #TODO: Security - who is allowed to delete codes?
-    lis = ("<li><form method='POST'><input type='hidden' name='deleteRfid' value='y'>
-            <input type='hidden' name ='code' value='#{code}'>#{code}
-            <input type='submit' value='X'></form></li>" for code in codes)
 
-    #TODO: Security - who is allowed to add codes?
-    htmlToAdd = "<form method='POST'><input type=text name='rfid'>"
-    htmlToAdd += "<input type='hidden' name='addNewRfid' value='rfid'>"
-    htmlToAdd += "<input type='submit'value='Add'></form>"
-    if lis.length
-      htmlToAdd += '<ul>'+lis.join('')+'</ul>'
-    $(".main h2").first().after htmlToAdd
+    htmlForExistingCode = (code) ->
+      """
+      <li>
+        <form method='POST'>
+          <input type='hidden' name='deleteRfid' value='y'>
+          <input type='hidden' name ='code' value='#{code}'>#{code}
+          <input type='submit' value='X'>
+        </form>
+      </li>
+      """
+    htmlForExistingCodes = ->
+      if codes.length
+        """
+        <ul>
+          #{(htmlForExistingCode(code) for code in codes).join("\n")}
+        </ul>
+        """
+      else
+        """
+        <ul>
+          <li>This user has no RFID codes, add one below</li>
+        </ul>
+        """
+
+    htmlToAdd = """
+      <h3>Manage RFID Code</h3>
+      <h4>Existing codes</h4>
+      #{htmlForExistingCodes()}
+      <form method='POST' class='form-horizontal'>
+        <h4>Add a code</h4>
+        <input type='hidden' name='addNewRfid' value='rfid'>
+        <div class="control-group">
+          <label for="rfid" class="control-label">RFID Code</label>
+          <div class="controls">
+            <input id="rfid" name="rfid" placeholder="00000000">
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <button type="Submit" class="btn-success">Add</button>
+          </div>
+        </div>
+      </form>
+      """
+
+    $(".main").append htmlToAdd
 
     done()
 
@@ -45,8 +81,10 @@ module.exports =
       get: ->
         @meta.rfidcodes ? []
     options.models.User.instanceMethods.addRfidCode = (newCode) ->
-      @rfidcodes.push(newCode) unless @rfidcodes.indexOf(newCode) >= 0
+      @rfidcodes.push(newCode) unless newCode in @rfidcodes
       @setMeta rfidcodes: @rfidcodes
     options.models.User.instanceMethods.deleteRfidCode = (code) ->
-      @rfidcodes.splice(@rfidcodes.indexOf(code),1)
-      @setMeta rfidcodes: @rfidcodes
+      index = @rfidcodes.indexOf(code)
+      if index >= 0
+        @rfidcodes.splice(index, 1)
+        @setMeta rfidcodes: @rfidcodes
