@@ -10,10 +10,10 @@ module.exports =
 
   modifyUserPage: (options, done) ->
     {controller, $} = options
+    return done() unless controller.loggedInUser.can('admin')
 
     #Get meta for currently selected user (not request user)
     codes = controller.user.rfidcodes
-    #TODO: Security - who is allowed to delete codes?
 
     htmlForExistingCode = (code) ->
       """
@@ -65,6 +65,7 @@ module.exports =
     done()
 
   processRfid: (done) ->
+    return done() unless @loggedInUser.can('admin')
     #this code runs in the context of the person controller instance, NOT this plugin
     #TODO: Security? Do we need to check the user is allowed to call us?
     if @req.method is 'POST' and @req.body.addNewRfid
