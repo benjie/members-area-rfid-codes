@@ -8,10 +8,10 @@
   "scripts": {
     "test": "echo \"Error: I need some tests!\" && exit 1"
   },
-   "author": {
-     "name": "Anton Piatek",
-     "email": "anton@piatek.co.uk"
-   },
+  "author": {
+    "name": "Anton Piatek",
+    "email": "anton@piatek.co.uk"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
