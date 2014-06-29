@@ -4,7 +4,7 @@ module.exports = class RfidCodes extends Controller
   list: (done)->
     @rendered = true # We're handling rendering
     #TODO Security! Need to check additional secret here. Secret should probably be set via a new admin view for rfidcodes
-    if false
+    if true
       @res.json 400, {errorCode: 400, errorMessage: "Invalid or no auth"}
       return done()
     else
